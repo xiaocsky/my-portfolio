@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI DESIGNER | 个人作品集</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+:root {
+  --primary: #ffffff;
+  --secondary: #b1b1b1;
+  --light: #121621;
+  --white: #ffffff;
+  --accent: #8a72ff;
+  --tag-color1: #8a72ff;
+  --tag-color2: #21ffde;
+  --tag-color3: #4cc9f0;
+  --tag-color4: #a86bff;
+  --transition: all 0.3s ease;
+  --module-margin: 4rem 0;
+  --section-gap: 6rem 0;
+  --tooltip-bg: rgba(18, 22, 33, 0.95);
+  --tooltip-border: rgba(138, 114, 255, 0.3);
+}
+
+body {
+  background-color: #000;
+  color: #ffffff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.stitch-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 修复：视频被隐藏问题 */
+  transform: translateY(240px);
+}
+
+.dot-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 300px;
+  background: linear-gradient(to top, #000, transparent);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ========== 导航栏 ========== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  padding: 1.2rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+}
+
+.nav-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.nav-menu {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 500;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.nav-menu a:hover {
+  color: var(--accent);
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.module-wrapper {
+  padding: 0 0 3rem 0;
+  margin: 0;
+}
+
+.hero {
+  min-height: 100vh;
+  padding-top: 120px;
+  padding-bottom: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.hero-container {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 3rem;
+  width: 100%;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ====================== 统一圆角：关于我 + 数据面板 ====================== */
+.hero-title-bar {
+  position: relative;
+  height: 80px;
+  background: linear-gradient(90deg, #2563eb 0%, #6366f1 100%);
+  display: flex;
+  align-items: center;
+  padding-left: 190px;
+  margin: 0;
+  border-radius: 16px 16px 0 0;
+}
+
+.hero-avatar {
+  position: absolute;
+  left: 30px;
+  top: -120px;
+  width: 140px;
+  height: 200px;
+  border-radius: 0;
+  overflow: hidden;
+  z-index: 10;
+}
+.hero-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.hero-title-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 1;
+}
+
+.hero-subtitle {
+  font-size: 1.6rem;
+  color: #fff;
+  font-weight: 300;
+  padding-left: 190px;
+  margin-bottom: 8px;
+}
+
+.hero-main-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+/* 名字单独样式 —— 上下左右自由调 */
+.hero-main-title .my-name {
+  font-size: 1.4rem;
+  color: #ffffff;
+  font-weight: 400;
+  margin-left: 4px;
+  /* 上下微调：核心生效代码 */
+  position: relative;
+  top: -1px;   /* 正数往下，负数往上 */
+}
+
+/* 数据面板 统一圆角 + 无缝贴合 */
+.hero-stats {
+  background: rgba(26, 31, 46, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 5rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  margin: 0;
+  place-items: center;
+  align-content: center;
+  border-radius: 0 0 16px 16px;
+}
+
+.stat-item {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stat-item:nth-child(-n+4) {
+  margin-bottom: 50px;
+}
+
+.stat-number.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: #ddd;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.digit-roll {
+  display: inline-flex; /* 用flex强制垂直居中，替代inline-block */
+  align-items: center;   /* 强制所有数字/符号在同一水平线上 */
+  justify-content: center;
+  height: 1.2em;
+  line-height: 1.2;
+  overflow: hidden;
+  position: relative;
+  vertical-align: bottom; /* 强制和符号/其他数字垂直居中对齐 */
+  font-variant-numeric: tabular-nums;
+  width: 0.64em;
+  text-align: center;
+}
+.digit-roll-inner {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: rollDigit 1.6s cubic-bezier(0.3, 0.7, 0.3, 1) forwards;
+  line-height: 1.2; /* 统一行高，确保每个数字在同一高度 */
+}
+@keyframes rollDigit {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(var(--target) * -100%)); }
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  opacity: 0;
+  visibility: hidden;
+  display: inline-flex; /* 用flex容器包裹所有数字/符号 */
+  align-items: center;  /* 强制所有元素在同一水平线上 */
+  justify-content: center;
+  gap: 2px; /* 给数字和符号加微小间距，避免拥挤 */
+  line-height: 1.2;
+}
+.stat-number.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 42px;
+}
+.hero-intro {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #ffffff;
+}
+.hero-intro p {
+  margin-bottom: 1rem;
+}
+.hero-intro p:last-child {
+  margin-bottom: 0;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+.skill-tag {
+  padding: 0 1.2rem;
+  height: 26px;
+  line-height: 24px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid;
+  cursor: default;
+  transition: var(--transition);
+}
+.skill-tag:hover {
+  transform: translateY(-2px);
+}
+.tag-1 { border-color: var(--tag-color1); color: var(--tag-color1); }
+.tag-2 { border-color: var(--tag-color2); color: var(--tag-color2); }
+.tag-3 { border-color: var(--tag-color3); color: var(--tag-color3); }
+.tag-4 { border-color: var(--tag-color4); color: var(--tag-color4); }
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  scroll-margin-top: 140px !important;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 50px;
+  height: 3px;
+  background: var(--accent);
+}
+
+.education {
+  background: rgba(26, 31, 46, 0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin: 0 0 var(--section-gap);
+  backdrop-filter: blur(12px);
+}
+.edu-item {
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.edu-item:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  border-bottom: none !important;
+}
+.edu-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.edu-title { font-size: 1.2rem; font-weight: 600; }
+.edu-date { color: var(--secondary); }
+.edu-desc { color: var(--secondary); line-height: 1.7; }
+
+.experience {
+  background: rgba(26, 31, 46, 0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin: 0 0 1.5rem;
+  backdrop-filter: blur(12px);
+}
+.exp-item {
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.exp-item:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  border-bottom: none !important;
+}
+.exp-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.exp-title { font-size: 1.2rem; font-weight: 600; }
+.exp-date { color: var(--secondary); }
+.exp-desc { color: var(--secondary); line-height: 1.7; }
+
+.projects { margin: var(--module-margin); }
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+.project-card {
+  background: rgba(26, 31, 46, 0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+}
+.project-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--accent);
+  box-shadow: 0 15px 30px rgba(138, 114, 255, 0.18);
+}
+.project-img-slider {
+  width: 100%;
+  height: 260px;
+  background: rgba(255,255,255,0.05);
+  overflow: hidden;
+  position: relative;
+}
+.slider-wrapper {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+.slider-item {
+  flex: 0 0 100%;
+  height: 100%;
+}
+.slider-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.5s;
+}
+.project-card:hover .slider-item img {
+  transform: scale(1.05);
+}
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.project-card:hover .slider-btn { opacity: 1; }
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+.slider-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.indicator.active { background: white; }
+.project-info { padding: 1.3rem; }
+.project-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.project-type {
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+.project-desc {
+  color: var(--secondary);
+  font-size: 0.95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+footer {
+  background: rgba(10, 12, 20, 0.6);
+  color: var(--primary);
+  text-align: center;
+  padding: 2.5rem 0;
+  border-top: none;
+  margin: var(--module-margin) 0 0 0;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1.2rem 0;
+}
+.footer-links a {
+  color: white;
+  font-size: 1.4rem;
+  transition: var(--transition);
+}
+.footer-links a:hover { color: var(--accent); }
+
+.tooltip {
+  position: fixed;
+  background: var(--tooltip-bg);
+  color: var(--primary);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border: 1px solid var(--tooltip-border);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 99999;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 项目卡片切换按钮 hover 交互 */
+.slider-btn {
+  transition: all 0.25s ease !important;
+}
+.slider-btn:hover {
+  background: rgba(138, 114, 255, 0.7) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* 弹窗内切换按钮 hover 交互 */
+.modal-slider-btn {
+  transition: all 0.25s ease !important;
+}
+.modal-slider-btn:hover {
+  background: rgba(138, 114, 255, 0.7) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* 全屏预览切换按钮 hover */
+.fullscreen-slider-btn {
+  transition: all 0.25s ease !important;
+}
+.fullscreen-slider-btn:hover {
+  background: rgba(138, 114, 255, 0.3) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(12px);
+}
+.modal-content {
+  background: rgba(18, 22, 33, 0.9);
+  color: white;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  border-radius: 20px;
+  position: relative;
+  animation: modalOpen 0.35s ease;
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+}
+
+.modal-body {
+  padding: 1.3rem 1.3rem 3rem 1.3rem !important;
+  max-height: calc(90vh - 80px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-break: break-word;
+}
+@keyframes modalOpen {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* 🔥 全新重写：关闭按钮 - 稳定、灵敏、动画流畅 */
+.close {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+  width: 48px;
+  height: 48px;
+  padding: 0 0 4px 0;
+  border-radius: 50%;
+  background: #121621;
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 24px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999999;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+/* hover 效果：柔和放大 + 变色 */
+.close:hover {
+  background: #8a72ff !important;
+  border-color: #8a72ff !important;
+  transform: translate(-50%, 50%) scale(1.08);
+}
+
+/* 点击动画：旋转 360°（必触发、不冲突） */
+.close:active {
+  animation: closeRotate 0.5s ease forwards;
+}
+
+@keyframes closeRotate {
+  0% { transform: translate(-50%, 50%) rotate(0deg); }
+  100% { transform: translate(-50%, 50%) rotate(360deg); }
+}
+
+.modal-img-slider {
+  width: 100%;
+  height: 400px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 14px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  position: relative;
+}
+.modal-slider-wrapper {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+.modal-slider-item {
+  flex: 0 0 100%;
+  height: 100%;
+}
+.modal-slider-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: rgba(0,0,0,0.2);
+}
+.modal-slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-prev-btn { left: 15px; }
+.modal-next-btn { right: 15px; }
+.modal-slider-indicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+.modal-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.modal-indicator.active { background: white; }
+.modal-type {
+  color: var(--accent);
+  font-size: 1rem;
+  margin: 8px 0;
+}
+.modal-desc {
+  color: #ddd;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+.modal-detail {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  line-height: 1.7;
+}
+
+.img-preview-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.img-preview-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.img-preview-overlay img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  user-select: none;
+}
+.fullscreen-slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.fullscreen-slider-btn:hover { background: rgba(255,255,255,0.25); }
+.fullscreen-prev { left: 30px; }
+.fullscreen-next { right: 30px; }
+
+/* ========== 移动端导航适配 ========== */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem 5%;
+  }
+  .nav-logo {
+    font-size: 1.2rem;
+  }
+  .nav-menu {
+    font-size: 1.4rem;
+    gap: 1.2rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    width: 100%;
+  }
+}
+
+/* ========== 电脑端中等屏幕适配 ========== */
+@media (max-width: 1024px) {
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .hero-left {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+/* ==============================================
+   【手机端专属】≤768px（所有手机）
+   已完整整合，无散落代码
+============================================== */
+@media (max-width: 768px) {
+  .stitch-bg {
+    height: 100vh !important;
+    min-height: 100vh !important;
+  }
+
+  .video-bg {
+    height: 100vh !important;
+    min-height: 100vh !important;
+  }
+
+  .video-bg video {
+    /* 针对iOS Safari的强制优化 */
+    -webkit-transform: translateZ(0); /* 开启硬件加速，避免亮度衰减 */
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  .container {
+    width: 92% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+  .hero-container {
+    width: 92% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    grid-template-columns: 1fr !important;
+  }
+  .hero-left {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .hero {
+    padding-top: 190px !important;
+  }
+
+  .hero-title-bar {
+    height: 70px !important;
+    padding-left: 160px !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+  .hero-avatar {
+    width: 140px !important;
+    height: 180px !important;
+    left: 12px !important;
+    top: auto !important;
+    bottom: 0 !important;
+  }
+
+  .hero-subtitle {
+    padding-left: 160px !important;
+    margin-bottom: 8px !important;
+    font-size: 1.4rem !important;
+  }
+  .hero-main-title {
+    font-size: 1.3rem !important;
+  }
+  /* 名字单独样式 —— 上下左右自由调 */
+  .hero-main-title .my-name {
+    font-size: 1.2rem;
+    color: #ffffff;
+    font-weight: 400;
+    margin-left: 2px;
+    /* 上下微调：核心生效代码 */
+    position: relative;
+    top: -1px;   /* 正数往下，负数往上 */
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(4, 1fr) !important;
+    padding: 2rem 1rem !important;
+    gap: 1rem !important;
+    border-radius: 0 0 16px 16px !important;
+  }
+  .stat-item {
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .stat-number {
+    justify-content: center !important;
+    margin: 0 auto 6px auto !important;
+    width: 100% !important;
+    font-size: clamp(1.5rem, 4vw, 2rem) !important;
+  }
+  
+  .stat-label {
+    width: 83% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+    line-height: 1.3 !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    font-size: clamp(0.8rem, 2vw, 0.95rem) !important;
+  }
+  .stat-item:nth-child(-n+4) {
+    margin-bottom: 0 !important;
+  }
+
+  .hero-right {
+    padding-top: 0 !important;
+  }
+  .hero-intro {
+    text-align: justify !important;
+    text-align-last: left !important;
+    font-size: 0.95rem !important;
+  }
+  .skill-tags{
+    margin-top: 0 !important;
+  }
+
+  .education,
+  .experience {
+    padding: 1.2rem !important;
+    margin-bottom: 32px !important;
+  }
+  .edu-desc,
+  .exp-desc {
+    text-align: justify !important;
+    text-align-last: left !important;
+  }
+
+  .module-wrapper{
+    padding-bottom: 0 !important;
+  }
+  .projects{
+    margin-top: 0px !important;
+  }
+  .project-info {
+    padding: 1rem !important;
+  }
+
+  .modal-body {
+    padding: 1rem 1rem 3rem 1rem !important;
+  }
+  .modal-desc,
+  .modal-detail {
+    text-align: justify !important;
+    text-align-last: left !important;
+  }
+  .modal-img-slider {
+    height: 240px !important;
+  }
+
+  .nav-menu {
+    font-size: 1rem !important;
+    gap: 1.5rem !important;
+  }
+}
+
+/* ==============================================
+   【平板端专属】768px ~ 1024px（iPad全系列）
+   已完整整合，无散落代码
+============================================== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .container {
+    width: 92% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .hero-container {
+    width: 92% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    grid-template-columns: 1fr !important;
+  }
+  .hero-left {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .hero {
+    padding-top: 298px !important;
+  }
+
+  .hero-title-bar {
+    height: 120px !important;
+    padding-left: 140px !important;
+    position: relative !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+
+  .hero-avatar {
+    width: 240px !important;
+    height: 300px !important;
+    left: 15px !important;
+    top: auto !important;
+    bottom: 0 !important;
+  }
+
+  .hero-subtitle {
+    padding-left: 278px !important;
+    margin-bottom: 8px !important;
+    font-size: 2.6rem !important;
+  }
+  .hero-main-title {
+    font-size: 2.6rem !important;
+    padding-left: 140px !important;
+  }
+
+  /* 名字单独样式 —— 上下左右自由调 */
+  .hero-main-title .my-name {
+    font-size: 2.2rem;
+    color: #ffffff;
+    font-weight: 400;
+    margin-left: 4px;
+    /* 上下微调：核心生效代码 */
+    position: relative;
+    top: -3px;   /* 正数往下，负数往上 */
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(4, 1fr) !important;
+    padding: 2.5rem 1.5rem !important;
+    gap: 1.5rem !important;
+    border-radius: 0 0 16px 16px !important;
+  }
+
+  .stat-item {
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .stat-number {
+    justify-content: center !important;
+    margin: 0 auto 6px auto !important;
+    width: 100% !important;
+    font-size: clamp(2rem, 4vw, 2.6rem) !important;
+  }
+
+  .stat-label {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+    line-height: 1.4 !important;
+    word-break: keep-all !important;
+    white-space: normal !important;
+    font-size: 1rem !important;
+  }
+
+  .hero-right {
+    padding-top: 20px !important;
+  }
+  .hero-intro {
+    text-align: justify !important;
+    text-align-last: left !important;
+    font-size: 1rem !important;
+  }
+
+  .education,
+  .experience {
+    padding: 1.5rem !important;
+    margin-bottom: 32px !important;
+  }
+  .edu-desc,
+  .exp-desc {
+    text-align: justify !important;
+    text-align-last: left !important;
+  }
+
+  .module-wrapper {
+    padding-bottom: 0 !important;
+  }
+  .projects {
+    margin-top: 0 !important;
+  }
+  .project-info {
+    padding: 1.2rem !important;
+  }
+
+  .modal-body {
+    padding: 1rem 1rem 3rem 1rem !important;
+  }
+  .modal-desc,
+  .modal-detail {
+    text-align: justify !important;
+    text-align-last: left !important;
+  }
+  .modal-img-slider {
+    height: 300px !important;
+  }
+
+  .nav-menu {
+    font-size: 1.1rem !important;
+    gap: 1.8rem !important;
+  }
+}
+  </style>
+</head>
+<body>
+
+<div class="stitch-bg">
+  <div class="video-bg">
+    <video autoplay loop muted playsinline>
+      <source src="https://storage.googleapis.com/gweb-gemini-cdn/gemini/uploads/89e9004d716a7803fc7c9aab18c985af783f5a36.mp4" type="video/mp4">
+    </video>
+  </div>
+  <canvas class="dot-canvas" id="dotMatrix"></canvas>
+  <div class="mask"></div>
+</div>
+
+<nav>
+  <div class="nav-logo">UI DESIGNER</div> 
+  <div class="nav-menu">
+    <a href="#about">关于我</a>
+    <a href="#education">教育背景</a>
+    <a href="#work-experience">工作经历</a>
+    <a href="#projects">项目实例</a>
+    <a href="#contact">联系方式</a>
+  </div>
+</nav>
+
+<section class="hero" id="about">
+  <div class="container hero-container">
+    <div class="hero-left">
+      <div class="hero-subtitle">你好，我是</div>
+
+      <div class="hero-title-bar">
+        <div class="hero-avatar">
+          <img src="https://s41.ax1x.com/2026/04/13/peBfvTK.png" alt="个人生活照">
+        </div>
+        <div class="hero-title-text">
+          <div class="hero-main-title">
+            UI DESIGNER 
+            <span class="my-name">赵世川</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number" data-value="30+">30+</div>
+          <div class="stat-label">服务政企客户</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-value="50+">50+</div>
+          <div class="stat-label">独立负责项目</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-value="8+">8+</div>
+          <div class="stat-label">覆盖业务系统</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-value="100%">100%</div>
+          <div class="stat-label">客户好评反馈</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-value="4+">4+</div>
+          <div class="stat-label">能源电网项目</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-value="2+">2+</div>
+          <div class="stat-label">交通行业项目</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-value="15+">15+</div>
+          <div class="stat-label">大型国资项目</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-value="50+">50+</div>
+          <div class="stat-label">上线落地系统</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-intro">
+        <p>擅长Web、APP、大屏可视化、HMI等领域的原型设计、UI设计、交互设计和用户体验设计。在职场中历经10+年的磨练，并积累了50+个电网交通能源相关、大型电商、互联网企业、数字化财务、大数据规划、RPA自动化、ERP系统、官网门户等项目实施经验。</p>
+        <p>服务涵盖客户包含不限于南方电网、贵州能源、北部湾港集团、中国国际海运集装箱集团、晶澳太阳能、内蒙电网、字节跳动、中国移动、伊利、中国通用技术、融创地产、民生银行、日立电梯、耐克、宁德时代、亚玛芬体育、奔驰、宝马、中国旅游、中国烟草、爱心人寿、中国医科院、苏博特科研院、苏交科、临港集团、OPPO、盈德气体、金科物业等。</p>
+        <p>此外，还具备卓越的团队合作能力和学习能力。在工作中，精通业务流程并准确解读业务需求；高效把控项目设计方向、进度及团队管理；并善于制定配套解决方案以保证产品用户体验落地。</p>
+        <p>技术能力：精通Sketch、Figma、Photoshop、Illustrator、AE、XD、MasterGo、Pr等专业软件以及Axure等原型工具。熟练运用Figma Make、Google Stitch、Lovable等AI工具完成Vibe Coding、需求分析、PRD需求文档撰写。</p>
+      </div>
+      <div class="skill-tags">
+        <div class="skill-tag tag-1">UIUX设计</div>
+        <div class="skill-tag tag-2">交互顾问</div>
+        <div class="skill-tag tag-3">需求分析</div>
+        <div class="skill-tag tag-4">用户研究</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience-wrapper" class="module-wrapper">
+  <div class="container">
+    <h2 class="section-title" id="education">教育背景</h2>
+    <div class="education">
+      <div class="edu-item">
+        <div class="edu-header">
+          <div class="edu-title">工业设计&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;重庆工商大学&nbsp;&nbsp;&nbsp;设计艺术学院</div>
+          <div class="edu-date">2009.09 - 2013.07</div>
+        </div>
+        <p class="edu-desc">本科，主修工业设计、视觉传达、用户体验设计，具备扎实的设计基础与审美能力，注重产品形态与用户体验结合。</p>
+      </div>
+    </div>
+
+    <h2 class="section-title" id="work-experience">工作经历</h2>
+    <div class="experience">
+      <div class="exp-item">
+        <div class="exp-header">
+          <div class="exp-title">资深UIUE咨询顾问&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;德勤华庆商务服务有限公司</div> 
+          <div class="exp-date">2018.11 - 至今</div>
+        </div>
+        <p class="exp-desc">任职8+年间，多个财年被评为最高绩效员工，完成50+个项目的Web、APP、大屏可视化等领域的原型设计、UI设计、交互设计和用户体验设计。
+          积累了50+个电网交通能源相关、大型电商、互联网企业、数字化财务、大数据规划、RPA自动化、ERP系统、官网门户等项目实施经验。
+          此外，还具备卓越的团队合作能力和学习能力如当下Ai运用等，在工作中，精通业务流程并准确解读业务需求；高效把控项目设计方向、进度及团队管理；并善于制定配套解决方案以保证产品用户体验落地。
+        </p>
+      </div>
+      <div class="exp-item">
+        <div class="exp-header">
+          <div class="exp-title">高级UI设计师&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;中国移动物联网(南京绛门)</div> 
+          <div class="exp-date">2017.04 - 2018.10</div>
+        </div>
+        <p class="exp-desc">1、独立负责 17 个 ToB & 平台类项目，涵盖中移物联网官网改版、和物 App、Bass 轻应用平台、乐清工业抄表、智能热泵、eUICC 管控中心、OPC 合作伙伴认证、OneNET 开发者中心等产品的全流程 UI/UX 设计。<br>
+        2、协同团队搭建统一设计规范与组件库，完成图标、基础图形、交互控件等体系化设计，提升视觉一致性与设计效率。<br>
+        3、负责设计稿交付与研发对接，配合产品梳理交互逻辑，推动界面方案完整落地，保障项目按时上线。
+        </p>
+      </div>
+      <div class="exp-item">
+        <div class="exp-header">
+          <div class="exp-title">高级UI设计师&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;重庆美世科技有限责任公司</div>
+          <div class="exp-date">2016.03 - 2017.04</div>
+        </div>
+        <p class="exp-desc">1、主导珠宝租赁平台移动端与 PC 端产品的整体视觉及交互体验设计，独立完成营销活动视觉创意，同时统筹移动端设计团队的日常管理与产出验收。<br>
+        2、主导搭建平台级设计系统，牵头制定视觉规范、图标体系与通用组件库，实现多端设计语言统一，大幅提升设计复用率与输出效率。<br>
+        3、深度对接产品与研发团队，全程跟进设计落地，参与交互逻辑评审，确保界面体验与视觉效果高质量还原上线。
+        </p>
+      </div>
+      <div class="exp-item">
+        <div class="exp-header">
+          <div class="exp-title">UI设计师&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;上海车轮互联股份有限公司</div>
+          <div class="exp-date">2013.09 - 2016.02</div>
+        </div>
+        <p class="exp-desc">1、负责车轮查违章、车轮考驾照、车轮社区、车主福利大全等多款车主类APP的UI视觉、交互体验、活动专题及部分HTML网页设计。<br>
+        2、参与搭建产品设计规范与组件体系，完成图标、控件及场景化视觉组件标准化设计，统一多产品设计语言。<br>
+        3、建立设计还原验收机制，全程跟进开发实现，精准把控视觉细节与交互体验一致性，确保最终上线效果与设计方案高度匹配。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="projects">
+  <div class="container">
+    <h2 class="section-title" id="projects">项目实例</h2>
+    <div class="project-grid" id="projectGrid"></div>
+  </div>
+</section>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <div class="close" onclick="closeModal(); event.stopPropagation()">&times;</div>
+    <div class="modal-body">
+      <div class="modal-img-slider">
+        <div class="modal-slider-wrapper" id="modal-slider"></div>
+        <button class="modal-slider-btn modal-prev-btn" onclick="changeModalSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button class="modal-slider-btn modal-next-btn" onclick="changeModalSlide(1)"><i class="fas fa-chevron-right"></i></button>
+        <div class="modal-slider-indicators" id="modal-indicators"></div>
+      </div>
+      <h2 id="modalTitle"></h2>
+      <p id="modalType" class="modal-type"></p>
+      <p id="modalDesc" class="modal-desc"></p>
+      <div id="modalDetail" class="modal-detail"></div>
+    </div>
+  </div>
+</div>
+
+<footer id="contact">
+  <div class="container">
+    <h3>期待与您合作</h3>
+    <div class="footer-links">
+      <a href="#" data-tooltip="Tel：13042361526"><i class="fas fa-phone"></i></a>
+      <a href="#" data-tooltip="Chat：xiaocsky"><i class="fab fa-weixin"></i></a>
+      <a href="#" data-tooltip="406177163@qq.com"><i class="fas fa-envelope"></i></a>
+      <a href="#" data-tooltip="https://dribbble.com/xiaocsky"><i class="fab fa-dribbble"></i></a>
+    </div>
+    <p>© 2026 UIUE DESIGNER XiaocSky. All rights reserved.</p>
+  </div>
+</footer>
+
+<div id="tooltip" class="tooltip"></div>
+<div class="img-preview-overlay" id="imgPreviewOverlay" onclick="closeImgPreview()">
+  <button class="fullscreen-slider-btn fullscreen-prev" onclick="changeFullScreenSlide(-1);event.stopPropagation()"><i class="fas fa-chevron-left"></i></button>
+  <img id="imgPreviewContent" src="" alt="预览大图">
+  <button class="fullscreen-slider-btn fullscreen-next" onclick="changeFullScreenSlide(1);event.stopPropagation()"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<script>
+  let currentModalProjectId = 0;
+let currentModalSlide = 0;
+let currentFullScreenIndex = 0;
+let currentFullScreenProject = null;
+let projectList = [];
+const slideIndex = {};
+// 滑动触摸变量
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// 项目卡片图片切换 - 无限循环
+function changeSlide(projectId, direction) {
+  const p = projectList.find(p => p.id === projectId);
+  if (!p) return;
+  const total = p.imgs.length;
+  if(total <= 1) return;
+  
+  let idx = slideIndex[projectId] + direction;
+  // 无限循环逻辑
+  if (idx < 0) idx = total - 1;
+  if (idx >= total) idx = 0;
+  goToSlide(projectId, idx);
+}
+
+function goToSlide(projectId, index) {
+  const p = projectList.find(p => p.id === projectId);
+  if (!p) return;
+  slideIndex[projectId] = index;
+  const slider = document.getElementById(`slider-${projectId}`);
+  const indicators = document.getElementById(`indicators-${projectId}`).children;
+  slider.style.transform = `translateX(-${index * 100}%)`;
+  for (let i = 0; i < indicators.length; i++) {
+    indicators[i].classList.toggle('active', i === index);
+  }
+}
+
+// 弹窗图片切换 - 无限循环
+function changeModalSlide(dir) {
+  const project = modalProjectsData.find(item => item.id === currentModalProjectId);
+  if (!project || project.imgs.length <= 1) return;
+  
+  let newIndex = currentModalSlide + dir;
+  const total = project.imgs.length;
+  // 无限循环逻辑
+  if (newIndex < 0) newIndex = total - 1;
+  if (newIndex >= total) newIndex = 0;
+  goToModalSlide(newIndex);
+}
+
+function goToModalSlide(idx) {
+  currentModalSlide = idx;
+  const slider = document.getElementById('modal-slider');
+  const indicators = document.getElementById('modal-indicators').children;
+  slider.style.transform = `translateX(-${idx * 100}%)`;
+  for (let i = 0; i < indicators.length; i++) {
+    indicators[i].classList.toggle('active', i === idx);
+  }
+}
+
+// 全屏图片切换 - 无限循环
+function changeFullScreenSlide(dir) {
+  if (!currentFullScreenProject || currentFullScreenProject.imgs.length <= 1) return;
+  const total = currentFullScreenProject.imgs.length;
+  let newIdx = currentFullScreenIndex + dir;
+  
+  if (newIdx < 0) newIdx = total - 1;
+  if (newIdx >= total) newIdx = 0;
+  
+  currentFullScreenIndex = newIdx;
+  document.getElementById('imgPreviewContent').src = currentFullScreenProject.imgs[newIdx];
+}
+
+// 滑动切换处理函数
+function handleTouchStart(e) {
+  touchStartX = e.changedTouches[0].screenX;
+}
+
+function handleTouchEnd(projectId, isModal = false) {
+  if (!touchStartX) return;
+  touchEndX = event.changedTouches[0].screenX;
+  const swipeThreshold = 50;
+  const diff = touchStartX - touchEndX;
+
+  if (Math.abs(diff) > swipeThreshold) {
+    if (diff > 0) {
+      // 左滑 - 下一张
+      isModal ? changeModalSlide(1) : changeSlide(projectId, 1);
+    } else {
+      // 右滑 - 上一张
+      isModal ? changeModalSlide(-1) : changeSlide(projectId, -1);
+    }
+  }
+  touchStartX = 0;
+  touchEndX = 0;
+}
+
+  const modalProjectsData = [
+    { 
+      id:1, imgs:[
+      "https://s41.ax1x.com/2026/04/08/peaSg5n.png",
+      ], 
+      title:"财务数字化转型流程可视化", 
+      type:"2.5D / 流程可视化", 
+      desc:"以「拆解复杂财务流程、降低理解成本」为核心目标，采用 2.5D 等距视角串联业务闭环", 
+      detail:`<h4>项目介绍</h4><p>本项目是面向企业财务数字化转型的金融计量与会计自动化系统流程可视化设计，核心围绕「数据平台→Prophet 计量→费用分摊→会计引擎」四大核心业务模块，完整呈现从数据接入、AI 计量、费用分摊到会计分录生成的全链路业务流程。</p>` 
+      },
+
+    { 
+      id:2, imgs:[
+      "https://s41.ax1x.com/2026/04/09/pediVPJ.jpg",
+      "https://s41.ax1x.com/2026/04/16/pes0wN9.jpg",
+      ], 
+      title:"中国民生银行财务共享服务平台", 
+      type:"金融级专业 / 模块化布局 / 流程可视化", 
+      desc:"用专业、清晰的视觉体系，重构银行财务人员的高效办公体验", 
+      detail:`<h4>项目介绍</h4><p>本项目旨在打造中国民生银行财务共享服务平台，解决传统财务工作中「流程分散、效率低下、合规风险高、数据不透明」的痛点，实现财务全流程的数字化、标准化、智能化管控，提升财务运营效率、降低运营成本、强化合规管理，支撑民生银行数字化转型。</p>` 
+      },
+
+    { 
+      id:3, imgs:[
+      "https://s41.ax1x.com/2026/04/09/pedeFyj.jpg",
+      "https://s41.ax1x.com/2026/04/16/pesDksf.jpg",
+      "https://s41.ax1x.com/2026/04/16/pesDPzt.jpg",
+      "https://s41.ax1x.com/2026/04/16/pesDFQP.jpg",
+      ], 
+      title:"中国通用技术GT-People人力平台", 
+      type:"游戏化激励 / 分步式引导 / 高参与感", 
+      desc:"以「高参与感 EHR 体验」为灵感，打造通用技术 GT-People 新 EHR 系统。通过游戏化激励、分步式表单引导、轻量化视觉设计，消解填报枯燥感，提升员工参与度，保障信息质量，强化品牌认同。", 
+      detail:`<h4>项目介绍</h4><p>本项目旨在打造通用技术 GT-People 新一代集团统一人力信息平台，解决传统 EHR 系统「员工参与度低、信息更新不及时、数据质量差、人才画像不完整」的痛点，实现集团人力资源数字化、人才地图可视化、员工信息自主化，支撑集团人才战略落地。</p>
+      <br><p>企业 EHR 系统常因流程繁琐、界面枯燥，导致员工填报意愿低、信息质量差。因此我锚定「年轻化视觉、游戏化激励、流程化引导、品牌化统一」的核心设计思路,
+        <br><br>1、高参与感设计，大幅提升填报完成率
+        <br>游戏化激励（排行榜、趣味文案）+ 轻量化视觉，消解员工填报抵触感，将被动任务转化为主动参与，信息采集完成率提升 40%+。
+        <br><br>2、分步式流程引导，降低填报难度
+        <br>拆解复杂表单为3步流程，搭配进度条、步骤状态标识，员工清晰掌握填报进度，学习成本为零，填报效率提升 50%。
+        <br><br>3、品牌视觉统一，强化企业认同感
+        <br>品牌蓝贯穿全流程，搭配企业专属插画、品牌标语，既强化品牌识别，又让员工在填报中感受企业文化，提升归属感。
+        <br><br>4、细节体验优化，保障信息质量
+        <br>清晰的表单分组、必填标识、操作反馈，支持分阶段保存、附件上传、技能标签自定义，既提升填报体验，又保障信息完整准确。</P>` 
+      },
+
+    {
+      id:4,
+      imgs:[
+          "https://s41.ax1x.com/2026/04/07/peUSmon.png",
+          "https://s41.ax1x.com/2026/04/07/peUSeds.png",
+          "https://s41.ax1x.com/2026/04/07/peUSZZj.png",
+          "https://s41.ax1x.com/2026/04/07/peUSELQ.png",
+          "https://s41.ax1x.com/2026/04/07/peUSkQS.png",
+          "https://s41.ax1x.com/2026/04/07/peUSiz8.png",
+          "https://s41.ax1x.com/2026/04/07/peUSPRf.png",
+          "https://s41.ax1x.com/2026/04/03/peYGIu4.png",
+          "https://s41.ax1x.com/2026/04/03/peYG4vF.png",
+          "https://s41.ax1x.com/2026/04/03/peYGhgU.png",
+          "https://s41.ax1x.com/2026/04/03/peYGWCV.png",
+          "https://s41.ax1x.com/2026/04/03/peYG240.png",
+          "https://s41.ax1x.com/2026/04/03/peYGgNq.png",
+          "https://s41.ax1x.com/2026/04/03/peYGcEn.png",
+          "https://s41.ax1x.com/2026/04/03/peYGyHs.png",
+          "https://s41.ax1x.com/2026/04/07/peUSAsg.png",
+      ],
+      title:"南方电网企业管理数字孪生驾驶舱",
+      type:"可视化大屏 / UI设计",
+      desc:"符合B端政企系统的品牌调性，视觉层次清晰，核心数据突出，业务与体验深度融合，贴合电力行业场景，分层级设计覆盖全角色，实现高管看全局，中层看流程，一线看明细的全角色需求，交互设计闭环，支撑业务全流程管理，模块化配置化设计，可扩展性强，支持业务迭代",
+      detail:`<h4>项目介绍</h4><p>本系统是南方电网广东电网的企业级数字化运营管理平台，包含数字孪生驾驶舱与智能运营管理模块。围绕资产全生命周期、客户工程查验等核心业务，实现从投资、建设、运行到报废的全流程可视化监控，支持多维度指标分析、流程遵从度校验、超期预警与问题定位，为管理层决策、中层流程管控、一线业务执行提供一体化数据支撑。</p>`
+      },
+
+    {
+      id:5,
+      imgs:[
+          "https://s41.ax1x.com/2026/04/08/peaS7VJ.png",
+          "https://s41.ax1x.com/2026/04/08/peaSob4.png",
+          "https://s41.ax1x.com/2026/04/08/peaSIrF.png",
+          "https://s41.ax1x.com/2026/04/08/peaS5KU.png",
+          "https://s41.ax1x.com/2026/04/08/peaShvT.png",
+          "https://s41.ax1x.com/2026/04/08/peaSf2V.png",
+          "https://s41.ax1x.com/2026/04/08/peaSW80.png",
+      ],
+      title:"中国旅游集团司库管理项目",
+      type:"可视化 / Dashboard / UI",
+      desc:"以3D业务全景图为核心，聚合资金、融资、结算、预算、风险、市场数据六大核心板块，给管理层「一眼全局」的概览，深蓝色科技风主色调，契合国企财务系统的专业、严谨、安全的品牌调性，适配大屏展示场景",
+      detail:`<h4>项目介绍</h4><p>本项目是中国旅游集团司库管理平台，面向集团财务 / 资金管理部门，打造的一站式资金数字化运营管理大屏系统，核心围绕集团「资金全生命周期管理」，实现资金可视、可控、可管、可预警。</p>`
+    },
+
+    { 
+      id:6, imgs:[
+      "https://s41.ax1x.com/2026/04/13/peBhMlj.jpg",
+      ], 
+      title:"中集集团人力经营管理驾驶舱平台", 
+      type:"数据治理 / 运营分析 / 决策支撑", 
+      desc:"数据可视化 + 场景化呈现 + 轻量化交互」的核心策略，打造一套适配企业级场景的可视化方案，既保证数据的严谨性，又兼顾决策的高效性。", 
+      detail:`<h4>项目介绍</h4><p>本项目旨在打造中集集团人力资源与经营管理驾驶舱平台，作为集团管理层的统一数字化决策中枢，解决传统管理 “信息分散、统计滞后、决策滞后、管理盲区” 的痛点，实现经营数据全景可视、人效指标实时监控、业务发展趋势可控。</p>` 
+      },
+
+    { id:7, imgs:[
+      "https://s41.ax1x.com/2026/04/14/peD0T3V.png",
+      "https://s41.ax1x.com/2026/04/14/peD0o90.png",
+      "https://s41.ax1x.com/2026/04/13/peBhlXn.png",
+      ], 
+      title:"电网产业态势分析与资产运营管控平台", 
+      type:"地理可视 / 行业可视化 / 大屏驾驶舱", 
+      desc:"用地理可视化 + 数据看板，把能源产业的宏观态势和微观状态彻底透明化", 
+      detail:`<h4>项目介绍</h4><p>本项目旨在打造产业态势分析与资产运营管控平台，作为能源产业（风电 / 光伏 / 水电 / 火电）的统一数字化中枢，解决传统产业 “信息分散、资产不明、状态滞后、运营难管” 的痛点，实现产业资产的全生命周期可视、全状态监控、全运营管理。</p>` 
+      },
+    
+    { id:8, imgs:[
+      "https://s41.ax1x.com/2026/04/09/pedikaF.png",
+      "https://s41.ax1x.com/2026/04/14/peD0x41.png",
+      "https://s41.ax1x.com/2026/04/14/peD0quF.png",
+      "https://s41.ax1x.com/2026/04/14/peD0HjU.png",
+      "https://s41.ax1x.com/2026/04/14/peD0jE9.png",
+      "https://s41.ax1x.com/2026/04/14/peD0OHJ.png",
+      "https://s41.ax1x.com/2026/04/09/pedegtf.png",
+      "https://s41.ax1x.com/2026/04/09/pedecAP.png",
+      "https://s41.ax1x.com/2026/04/14/peD0LB4.png",
+
+      ], 
+      title:"德勤AI驱动人力资源运营与决策平台", 
+      type:"AI原生交互 / 全场景一站式 / 多端一致体验", 
+      desc:"为咨询行业高端职场打造 “AI 共生的沉浸式工作中枢”", 
+      detail:`<h4>项目介绍</h4><p>本项目旨在打造德勤集团级 AI 驱动的人力资源运营与决策平台，作为企业 HR 数字化的标杆项目，解决传统 HR 系统 “功能割裂、体验老旧、效率低下、数据不透明” 的痛点，实现HR 运营智能化、员工体验个性化、人才决策数据化。</p>` 
+      },
+
+      { id:9, imgs:[
+      "https://s41.ax1x.com/2026/04/13/peBhVTf.jpg",
+      "https://s41.ax1x.com/2026/04/13/peBhek8.jpg",
+      "https://s41.ax1x.com/2026/04/13/peBhAmt.jpg",
+      "https://s41.ax1x.com/2026/04/13/peBhFOI.jpg",
+      ], 
+      title:"部分其他作品汇总", 
+      type:"AE / UI / banner / Logo", 
+      desc:"通过UI优化解决体验痛点、统一品牌、提升转化、降低迭代成本，实现用户价值与业务价值双赢。", 
+      detail:`<h4> </h4><p> </p>` 
+      },
+  ];
+
+  const modal = document.getElementById('modal');
+
+function initModalSlider(projectId) {
+  currentModalProjectId = projectId;
+  currentModalSlide = 0;
+  const project = modalProjectsData.find(item=>item.id===projectId);
+  const sliderWrapper = document.getElementById('modal-slider');
+  const indicatorsWrapper = document.getElementById('modal-indicators');
+  sliderWrapper.innerHTML = '';
+  indicatorsWrapper.innerHTML = '';
+  
+  project.imgs.forEach((img,idx)=>{
+    sliderWrapper.innerHTML+=`<div class="modal-slider-item">
+      <img src="${img}" alt="作品展示" onclick="openImgPreview(this.src, ${projectId}, ${idx})" style="cursor:zoom-in;">
+    </div>`;
+    indicatorsWrapper.innerHTML+=`<div class="modal-indicator ${idx===0?'active':''}" onclick="goToModalSlide(${idx})"></div>`;
+  });
+  
+  const prevBtn = document.querySelector('.modal-prev-btn');
+  const nextBtn = document.querySelector('.modal-next-btn');
+  if (project.imgs.length <= 1) {
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+    indicatorsWrapper.style.display = 'none';
+  } else {
+    prevBtn.style.display = 'flex';
+    nextBtn.style.display = 'flex';
+    indicatorsWrapper.style.display = 'flex';
+  }
+  sliderWrapper.style.transform = 'translateX(0)';
+}
+
+function openModal(id){
+  const project = modalProjectsData.find(item=>item.id===id);
+  if(!project)return;
+  initModalSlider(id);
+  document.getElementById('modal').style.display='flex';
+  document.getElementById('modalTitle').innerText=project.title;
+  document.getElementById('modalType').innerText=project.type;
+  document.getElementById('modalDesc').innerText=project.desc;
+  document.getElementById('modalDetail').innerHTML=project.detail;
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('modal').style.display='none';
+  document.body.style.overflow='auto';
+}
+
+function resetAndPlayNumberAnimation() {
+  const numbers = document.querySelectorAll('.stat-number');
+  numbers.forEach(number => {
+    number.classList.remove('visible');
+    number.innerHTML = '';
+    const val = number.dataset.value.trim();
+    const numStr = val.replace(/\D/g, '');
+    const suffix = val.replace(/\d/g, '');
+    for (let char of numStr) {
+      const wrap = document.createElement('div');
+      wrap.className = 'digit-roll';
+      const inner = document.createElement('div');
+      inner.className = 'digit-roll-inner';
+      inner.innerHTML = '0<br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9';
+      inner.style.setProperty('--target', parseInt(char));
+      wrap.appendChild(inner);
+      number.appendChild(wrap);
+    }
+    if (suffix) {
+      const s = document.createElement('span');
+      s.className = 'symbol';
+      s.textContent = suffix;
+      number.appendChild(s);
+    }
+  });
+  setTimeout(() => {
+    numbers.forEach(n => n.classList.add('visible'));
+  }, 100);
+}
+
+const tooltip = document.getElementById('tooltip');
+const tooltipLinks = document.querySelectorAll('.footer-links a[data-tooltip]');
+tooltipLinks.forEach(link => {
+  link.addEventListener('mouseenter', (e) => {
+    const text = link.getAttribute('data-tooltip');
+    tooltip.textContent = text;
+    const rect = link.getBoundingClientRect();
+    tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+    tooltip.style.top = `${rect.top - tooltip.offsetHeight - 8}px`;
+    tooltip.classList.add('show');
+  });
+  link.addEventListener('mouseleave', () => {
+    tooltip.classList.remove('show');
+  });
+  link.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const copyText = link.getAttribute('data-tooltip');
+    try {
+      await navigator.clipboard.writeText(copyText);
+      tooltip.textContent = '✅ 复制成功！';
+    } catch (err) {
+      tooltip.textContent = '❌ 复制失败，请手动复制';
+    }
+  });
+});
+
+function openImgPreview(src, projectId, index) {
+  const overlay = document.getElementById('imgPreviewOverlay');
+  const img = document.getElementById('imgPreviewContent');
+  currentFullScreenProject = modalProjectsData.find(p => p.id === projectId);
+  currentFullScreenIndex = index;
+  img.src = src;
+  overlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+
+  const prev = document.querySelector('.fullscreen-prev');
+  const next = document.querySelector('.fullscreen-next');
+  if (currentFullScreenProject.imgs.length <= 1) {
+    prev.style.display = 'none';
+    next.style.display = 'none';
+  } else {
+    prev.style.display = 'flex';
+    next.style.display = 'flex';
+  }
+}
+
+function closeImgPreview() {
+  const overlay = document.getElementById('imgPreviewOverlay');
+  overlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const grid = document.getElementById('projectGrid');
+  projectList = [...modalProjectsData].sort((a, b) => a.id - b.id);
+
+  projectList.forEach(project => {
+    const pid = project.id;
+    slideIndex[pid] = 0;
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.setAttribute('onclick', `openModal(${pid})`);
+
+    card.innerHTML = `
+      <div class="project-img-slider">
+        <div class="slider-wrapper" id="slider-${pid}" 
+          ontouchstart="handleTouchStart(event)" 
+          ontouchend="handleTouchEnd(${pid})">
+        </div>
+        <button class="slider-btn prev-btn" onclick="changeSlide(${pid}, -1); event.stopPropagation()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="slider-btn next-btn" onclick="changeSlide(${pid}, 1); event.stopPropagation()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="slider-indicators" id="indicators-${pid}"></div>
+      </div>
+      <div class="project-info">
+        <h3 class="project-name"></h3>
+        <p class="project-type"></p>
+        <p class="project-desc"></p>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    const slider = card.querySelector(`#slider-${pid}`);
+    const indicators = card.querySelector(`#indicators-${pid}`);
+    slider.innerHTML = '';
+    indicators.innerHTML = '';
+
+    project.imgs.forEach((img, idx) => {
+      slider.innerHTML += `<div class="slider-item"><img src="${img}" alt="项目封面"></div>`;
+      indicators.innerHTML += `<div class="indicator ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${pid}, ${idx})"></div>`;
+    });
+    if (project.imgs.length <= 1) {
+      indicators.style.display = 'none';
+      const prevBtn = card.querySelector('.prev-btn');
+      const nextBtn = card.querySelector('.next-btn');
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    }
+
+    card.querySelector('.project-name').innerText = project.title;
+    card.querySelector('.project-type').innerText = project.type;
+    card.querySelector('.project-desc').innerText = project.desc;
+  });
+
+  // 弹窗滑动绑定
+  const modalSlider = document.getElementById('modal-slider');
+  if(modalSlider) {
+    modalSlider.setAttribute('ontouchstart', 'handleTouchStart(event)');
+    modalSlider.setAttribute('ontouchend', 'handleTouchEnd(null, true)');
+  }
+
+  resetAndPlayNumberAnimation();
+  let lastTop = 0;
+  window.addEventListener('scroll', () => {
+    const top = window.scrollY;
+    if (top < 200 && lastTop >= 200) {
+      resetAndPlayNumberAnimation();
+    }
+    lastTop = top;
+  });
+});
+
+window.addEventListener('click', e => e.target === modal && closeModal());
+document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
+
+// 背景点阵
+const canvas = document.getElementById('dotMatrix');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  drawDots();
+}
+
+function drawDots() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
+  const size = 16;
+  const radius = 1;
+  for (let x = 0; x < canvas.width; x += size) {
+    for (let y = 0; y < canvas.height; y += size) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+</script>
+</body>
+</html>
